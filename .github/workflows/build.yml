@@ -17,7 +17,6 @@ jobs:
         uses: easimon/maximize-build-space@master
         with:
           root-reserve-mb: 76800
-          swap-size-mb: 4096
 
       - name: Build
         run: |

@@ -17,10 +17,12 @@ jobs:
         run: |
           sudo apt update
           sudo apt install gnupg flex bison build-essential zip curl zlib1g-dev gcc-multilib g++-multilib libc6-dev-i386 libncurses5 lib32ncurses5-dev x11proto-core-dev libx11-dev lib32z1-dev libgl1-mesa-dev libxml2-utils xsltproc unzip fontconfig repo
-          sudo repo init -u https://android.googlesource.com/platform/manifest -b android-security-11.0.0_r67
-          sudo repo sync -j$(nproc --all) --force-sync
-          rm -rf bootable/recovery
-          git clone https://github.com/azwhikaru/twrp_device_rockchip_orangepi-3b.git bootable/recovery
-          source build/envsetup.sh
-          make clean
-          make recoveryimage -j16
+          repo init -u https://github.com/LineageOS/android.git -b lineage-20.0 --git-lfs
+          repo sync build/make
+          wget -O - https://raw.githubusercontent.com/waydroid/android_vendor_waydroid/lineage-20/manifest_scripts/generate-manifest.sh | bash
+          repo sync
+          . build/envsetup.sh
+          apply-waydroid-patches
+          lunch lineage_waydroid_arm64-userdebug
+          make systemimage -j$(nproc --all)
+          make vendorimage -j$(nproc --all)
